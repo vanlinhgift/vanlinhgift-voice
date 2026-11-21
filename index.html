@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vạn Linh Gift - Nhận diện giọng nói</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      margin: 0;
+      padding: 25px;
+      color: #243447;
+    }
+    .container {
+      max-width: 600px;
+      margin: 35px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px #0001;
+      text-align: center;
+    }
+    h2 { color: #176b45; }
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 13px 20px;
+      margin: 8px 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #micButton {
+      background: #16834b;
+      color: white;
+    }
+    #stopButton {
+      background: #dc3545;
+      color: white;
+    }
+    #copyButton {
+      background: #245b9e;
+      color: white;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 120px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    #status {
+      margin: 18px 0;
+      color: #176b45;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>VẠN LINH GIFT</h2>
+    <p>Nhận diện giọng nói tiếng Việt</p>
+
+    <button id="micButton" onclick="startRecognition()">
+      🎤 Bắt đầu nói
+    </button>
+
+    <button id="stopButton" onclick="stopRecognition()">
+      ⏹ Dừng
+    </button>
+
+    <div id="status">Sẵn sàng nhận diện giọng nói</div>
+
+    <textarea id="result"
+      placeholder="Nội dung cô nói sẽ xuất hiện ở đây..."></textarea>
+
+    <br>
+
+    <button id="copyButton" onclick="copyText()">
+      📋 Sao chép nội dung
+    </button>
+  </div>
+
+  <script>
+    let recognition;
+    let isListening = false;
+
+    function initRecognition() {
+      const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        document.getElementById("status").textContent =
+          "Trình duyệt chưa hỗ trợ nhận diện giọng nói.";
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "vi-VN";
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = function() {
+        isListening = true;
+        document.getElementById("status").textContent =
+          "🎤 Đang nghe cô nói...";
+      };
+
+      recognition.onresult = function(event) {
+        let transcript = "";
+
+        for (let i = event.resultIndex;
+             i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+
+        document.getElementById("result").value = transcript;
+      };
+
+      recognition.onerror = function(event) {
+        document.getElementById("status").textContent =
+          "Lỗi nhận diện: " + event.error;
+      };
+
+      recognition.onend = function() {
+        isListening = false;
+        document.getElementById("status").textContent =
+          "Đã kết thúc nhận diện. Cô có thể thử lại.";
+      };
+    }
+
+    function startRecognition() {
+      if (!recognition) initRecognition();
+
+      if (!recognition) return;
+
+      if (isListening) return;
+
+      try {
+        recognition.start();
+      } catch (error) {
+        document.getElementById("status").textContent =
+          "Không thể khởi động micro: " + error.message;
+      }
+    }
+
+    function stopRecognition() {
+      if (recognition && isListening) {
+        recognition.stop();
+      }
+    }
+
+    function copyText() {
+      const text = document.getElementById("result").value;
+
+      if (!text.trim()) {
+        alert("Chưa có nội dung để sao chép.");
+        return;
+      }
+
+      navigator.clipboard.writeText(text)
+        .then(() => alert("Đã sao chép nội dung!"))
+        .catch(() => alert("Không thể sao chép tự động."));
+    }
+
+    initRecognition();
+  </script>
+</body>
+</html>
