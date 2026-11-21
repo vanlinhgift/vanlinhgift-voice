@@ -706,6 +706,7 @@ utterance.volume = 1;
    * Khởi tạo nhận diện giọng nói
    */
   
+
 function initSpeechRecognition() {
 
   const SpeechRecognition =
@@ -713,12 +714,16 @@ function initSpeechRecognition() {
     window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    micButton.disabled = true;
-    micButton.style.opacity = '0.4';
+    recognition = null;
+
+    micButton.disabled = false;
+    micButton.style.opacity = '1';
+    micButton.title = 'Trình duyệt không hỗ trợ nhận diện giọng nói';
 
     setStatus(
-      'Trình duyệt không hỗ trợ nhận diện giọng nói. Hãy sử dụng Google Chrome.'
+      'Thiết bị chưa hỗ trợ nút micro. Bạn hãy dùng micro trên bàn phím để nhập câu hỏi nhé!'
     );
+
     return;
   }
 
@@ -768,10 +773,10 @@ function initSpeechRecognition() {
 
     const errors = {
       'not-allowed':
-        'Bạn chưa cấp quyền micro. Hãy cấp quyền micro cho trang web trong Chrome.',
+        'Bạn chưa cấp quyền micro. Hãy cấp quyền micro cho trang web.',
 
       'service-not-allowed':
-        'Dịch vụ nhận diện giọng nói đang bị trình duyệt chặn.',
+        'Trình duyệt không cho phép nhận diện giọng nói. Bạn hãy dùng micro trên bàn phím điện thoại nhé!',
 
       'no-speech':
         'Không phát hiện giọng nói. Hãy kiểm tra micro và thử nói lại.',
@@ -799,7 +804,6 @@ function initSpeechRecognition() {
     micButton.classList.remove('recording');
     micButton.textContent = '🎤';
 
-    // Không ghi đè thông báo lỗi
     if (recognitionError) {
       return;
     }
