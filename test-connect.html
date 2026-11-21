@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kiểm tra kết nối Vạn Linh Gift</title>
+</head>
+<body>
+  <h2>KIỂM TRA KẾT NỐI CHATBOT</h2>
+  <p id="status">Đang chuẩn bị...</p>
+  <button onclick="testConnection()">Thử kết nối Gemini</button>
+  <pre id="result"></pre>
+
+  <script>
+    const API_URL =
+      'https://script.google.com/macros/s/AKfycbwAxk1xm7veXH94_kI9rAx-Axj9RDMa6Z7YYkHmXb5GyzpC4-ZL4-ga9zkqO8DnGk-k/exec';
+
+    function showResult(data) {
+      document.getElementById('status').textContent =
+        data.success ? 'KẾT NỐI THÀNH CÔNG!' : 'CÓ LỖI TỪ MÁY CHỦ';
+
+      document.getElementById('result').textContent =
+        data.answer || 'Không nhận được câu trả lời.';
+    }
+
+    function testConnection() {
+      document.getElementById('status').textContent =
+        'Đang gửi câu hỏi đến Gemini...';
+
+      document.getElementById('result').textContent = '';
+
+      const oldScript = document.getElementById('apiScript');
+      if (oldScript) oldScript.remove();
+
+      const script = document.createElement('script');
+      script.id = 'apiScript';
+
+      const question =
+        'Xin chào, hãy giới thiệu Vạn Linh Gift bằng 3 câu ngắn gọn.';
+
+      script.src = API_URL +
+        '?action=ask' +
+        '&callback=showResult' +
+        '&question=' + encodeURIComponent(question);
+
+      script.onerror = function() {
+        document.getElementById('status').textContent =
+          'Không tải được dữ liệu từ Apps Script.';
+      };
+
+      document.body.appendChild(script);
+    }
+  </script>
+</body>
+</html>
