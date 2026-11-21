@@ -477,12 +477,15 @@
 
       window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Thay tên thương hiệu bằng cách đọc gần âm tiếng Anh
+const spokenText = text.replace(/\bGift\b/gi, 'ghíft');
 
-      utterance.lang = 'vi-VN';
-      utterance.rate = 0.92;
-      utterance.pitch = 1.05;
-      utterance.volume = 1;
+const utterance = new SpeechSynthesisUtterance(spokenText);
+
+utterance.lang = 'vi-VN';
+utterance.rate = 0.92;
+utterance.pitch = 1.05;
+utterance.volume = 1;
 
       const voices = window.speechSynthesis.getVoices();
 
