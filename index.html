@@ -4,171 +4,866 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vạn Linh Gift - Nhận diện giọng nói</title>
+
+  <title>Tư vấn Vạn Linh Gift</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      margin: 0;
-      padding: 25px;
-      color: #243447;
+    * {
+      box-sizing: border-box;
     }
-    .container {
-      max-width: 600px;
-      margin: 35px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 18px #0001;
+
+    body {
+      margin: 0;
+      padding: 12px;
+      font-family: Arial, sans-serif;
+      background: #f4f7f2;
+      color: #26352b;
+    }
+
+    .chat-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+      border: 1px solid #e0e9df;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #176b45, #2d9561);
+      color: white;
+      padding: 20px 18px;
       text-align: center;
     }
-    h2 { color: #176b45; }
-    button {
-      border: 0;
-      border-radius: 9px;
-      padding: 13px 20px;
-      margin: 8px 4px;
+
+    .chat-header h2 {
+      margin: 0 0 7px;
+      font-size: 22px;
+    }
+
+    .chat-header p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0.95;
+    }
+
+    .status {
+      padding: 9px 14px;
+      background: #f0f7f1;
+      color: #34734b;
+      font-size: 12px;
+      text-align: center;
+      border-bottom: 1px solid #e5eee5;
+      min-height: 34px;
+    }
+
+    #messages {
+      height: 390px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #fbfcfa;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 15px;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e2f1e5;
+      font-size: 17px;
+    }
+
+    .message.user .avatar {
+      display: none;
+    }
+
+    .bubble {
+      max-width: 84%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message.bot .bubble {
+      background: #edf5ed;
+      border: 1px solid #dcebdd;
+      border-top-left-radius: 4px;
+    }
+
+    .message.user .bubble {
+      background: #238452;
+      color: white;
+      border-top-right-radius: 4px;
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .audio-controls button {
+      border: 1px solid #b9d7c0;
+      border-radius: 20px;
+      padding: 6px 11px;
+      background: #ffffff;
+      color: #236943;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 12px;
     }
+
+    .audio-controls button:hover {
+      background: #e3f3e6;
+    }
+
+    .suggestions {
+      padding: 10px 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-top: 1px solid #edf0eb;
+      background: white;
+    }
+
+    .suggestions button {
+      border: 1px solid #c9dfce;
+      background: #f5faf5;
+      color: #286b43;
+      padding: 7px 11px;
+      border-radius: 18px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .suggestions button:hover {
+      background: #e5f3e7;
+    }
+
+    .voice-settings {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #f8faf7;
+      border-top: 1px solid #edf0eb;
+      font-size: 12px;
+      color: #526456;
+    }
+
+    .voice-settings label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .voice-settings input {
+      accent-color: #238452;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 8px;
+      padding: 13px;
+      background: white;
+      border-top: 1px solid #e7eee7;
+    }
+
+    #question {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #ccd9ce;
+      border-radius: 22px;
+      padding: 12px 15px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    #question:focus {
+      border-color: #238452;
+      box-shadow: 0 0 0 2px rgba(35,132,82,0.1);
+    }
+
+    .action-button {
+      width: 43px;
+      height: 43px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
     #micButton {
-      background: #16834b;
+      background: #e8f2e9;
+      color: #267044;
+    }
+
+    #micButton.recording {
+      background: #ffe2e2;
+      color: #c62828;
+      animation: pulse 1.2s infinite;
+    }
+
+    #sendButton {
+      background: #238452;
       color: white;
     }
-    #stopButton {
-      background: #dc3545;
-      color: white;
+
+    #sendButton:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
-    #copyButton {
-      background: #245b9e;
-      color: white;
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(198,40,40,0.35); }
+      70% { box-shadow: 0 0 0 9px rgba(198,40,40,0); }
+      100% { box-shadow: 0 0 0 0 rgba(198,40,40,0); }
     }
-    textarea {
-      width: 100%;
-      box-sizing: border-box;
-      min-height: 120px;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-top: 12px;
+
+    .footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 11px;
+      color: #819184;
+      background: #ffffff;
     }
-    #status {
-      margin: 18px 0;
-      color: #176b45;
-      font-weight: bold;
+
+    .typing {
+      color: #6c806f;
+      font-size: 13px;
+      font-style: italic;
+      padding: 5px 0;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 4px;
+      }
+
+      .chat-container {
+        border-radius: 12px;
+      }
+
+      #messages {
+        height: 360px;
+        padding: 12px;
+      }
+
+      .bubble {
+        max-width: 90%;
+      }
+
+      .chat-header h2 {
+        font-size: 19px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <h2>VẠN LINH GIFT</h2>
-    <p>Nhận diện giọng nói tiếng Việt</p>
 
-    <button id="micButton" onclick="startRecognition()">
-      🎤 Bắt đầu nói
+<div class="chat-container">
+
+  <div class="chat-header">
+    <h2>🌿 VẠN LINH GIFT</h2>
+    <p>Trợ lý tư vấn sản vật và quà tặng quê hương</p>
+  </div>
+
+  <div class="status" id="status">
+  ĐANG KIỂM TRA JAVASCRIPT...
+</div>
+
+  <div id="messages">
+
+    <div class="message bot">
+      <div class="avatar">🌿</div>
+      <div class="bubble">
+        Xin chào! Tôi là trợ lý tư vấn Vạn Linh Gift.
+
+        Tôi có thể giúp bạn tìm hiểu các sản vật quê hương Vạn Linh, tham khảo giá sản phẩm và lựa chọn những hộp quà ý nghĩa.
+
+        Bạn có thể nhập câu hỏi hoặc nhấn nút micro để trò chuyện với tôi nhé!
+      </div>
+    </div>
+
+  </div>
+
+  <div class="suggestions">
+    <button onclick="askSuggestion('Vạn Linh có những sản vật nào?')">
+      🌱 Các sản vật
     </button>
 
-    <button id="stopButton" onclick="stopRecognition()">
-      ⏹ Dừng
+    <button onclick="askSuggestion('Giới thiệu về na Vạn Linh')">
+      🍈 Na Vạn Linh
     </button>
 
-    <div id="status">Sẵn sàng nhận diện giọng nói</div>
+    <button onclick="askSuggestion('Tư vấn giúp tôi một hộp quà 200.000 đồng')">
+      🎁 Tư vấn hộp quà
+    </button>
 
-    <textarea id="result"
-      placeholder="Nội dung cô nói sẽ xuất hiện ở đây..."></textarea>
-
-    <br>
-
-    <button id="copyButton" onclick="copyText()">
-      📋 Sao chép nội dung
+    <button onclick="askSuggestion('Giá các sản vật hiện nay là bao nhiêu?')">
+      💰 Giá sản phẩm
     </button>
   </div>
 
-  <script>
-    let recognition;
-    let isListening = false;
+  <div class="voice-settings">
+    <label>
+      <input type="checkbox" id="autoSpeak" checked>
+      Tự động đọc câu trả lời
+    </label>
 
-    function initRecognition() {
-      const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
+    <span>🎙️ Tiếng Việt</span>
+  </div>
 
-      if (!SpeechRecognition) {
-        document.getElementById("status").textContent =
-          "Trình duyệt chưa hỗ trợ nhận diện giọng nói.";
+  <div class="input-area">
+
+    <button
+  id="micButton"
+  class="action-button"
+  onclick="toggleRecognition()"
+  title="Nói câu hỏi">
+  🎤
+</button>
+
+    <input
+      type="text"
+      id="question"
+      placeholder="Nhập câu hỏi hoặc nhấn micro..."
+      onkeydown="handleEnter(event)"
+    >
+
+    <button
+      id="sendButton"
+      class="action-button"
+      onclick="sendMessage()"
+      title="Gửi câu hỏi">
+      ➤
+    </button>
+
+  </div>
+
+  <div class="footer">
+    Vạn Linh Gift – Số hóa hương quê, kết nối giá trị địa phương
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('status').textContent =
+  'JAVASCRIPT ĐÃ ĐƯỢC THỰC THI!';
+  const questionInput = document.getElementById('question');
+  const messages = document.getElementById('messages');
+  const statusBox = document.getElementById('status');
+  const micButton = document.getElementById('micButton');
+  const sendButton = document.getElementById('sendButton');
+
+  let recognition = null;
+  let isRecording = false;
+  let isSending = false;
+
+  /**
+   * Hiển thị trạng thái
+   */
+  function setStatus(message) {
+    statusBox.textContent = message;
+  }
+
+  /**
+   * Cuộn đến tin nhắn mới nhất
+   */
+  function scrollToBottom() {
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  /**
+   * Thêm tin nhắn vào giao diện
+   */
+  function addMessage(text, sender) {
+    const message = document.createElement('div');
+    message.className = 'message ' + sender;
+
+    if (sender === 'bot') {
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = '🌿';
+      message.appendChild(avatar);
+    }
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+
+    message.appendChild(bubble);
+    messages.appendChild(message);
+
+    scrollToBottom();
+
+    return bubble;
+  }
+
+  /**
+   * Hiển thị thông báo đang xử lý
+   */
+  function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.id = 'typing';
+    typing.textContent = '🌿 Đang tìm hiểu và tư vấn...';
+
+    messages.appendChild(typing);
+    scrollToBottom();
+  }
+
+  function removeTyping() {
+    const typing = document.getElementById('typing');
+
+    if (typing) {
+      typing.remove();
+    }
+  }
+
+  /**
+   * Đọc câu trả lời bằng giọng có sẵn trên trình duyệt
+   */
+  function speakAnswer(text, messageBox) {
+
+    const controls = document.createElement('div');
+    controls.className = 'audio-controls';
+
+    const playButton = document.createElement('button');
+    playButton.textContent = '🔊 Nghe lại';
+
+    const stopButton = document.createElement('button');
+    stopButton.textContent = '⏹ Dừng đọc';
+
+    controls.appendChild(playButton);
+    controls.appendChild(stopButton);
+
+    messageBox.appendChild(controls);
+
+    function playVoice() {
+
+      if (!window.speechSynthesis) {
+        setStatus('Trình duyệt không hỗ trợ đọc văn bản.');
         return;
       }
 
-      recognition = new SpeechRecognition();
-      recognition.lang = "vi-VN";
-      recognition.continuous = false;
-      recognition.interimResults = true;
+      window.speechSynthesis.cancel();
 
-      recognition.onstart = function() {
-        isListening = true;
-        document.getElementById("status").textContent =
-          "🎤 Đang nghe cô nói...";
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      utterance.lang = 'vi-VN';
+      utterance.rate = 0.92;
+      utterance.pitch = 1.05;
+      utterance.volume = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+
+      const vietnameseVoices = voices.filter(function(voice) {
+        return voice.lang &&
+          voice.lang.toLowerCase().startsWith('vi');
+      });
+
+      // Ưu tiên giọng có tên thể hiện là nữ nếu hệ thống cung cấp
+      const femaleVoice = vietnameseVoices.find(function(voice) {
+        return /female|woman|nữ/i.test(voice.name);
+      });
+
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      } else if (vietnameseVoices.length > 0) {
+        utterance.voice = vietnameseVoices[0];
+      }
+
+      utterance.onstart = function() {
+        setStatus('🔊 Đang đọc câu trả lời...');
       };
 
-      recognition.onresult = function(event) {
-        let transcript = "";
-
-        for (let i = event.resultIndex;
-             i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-
-        document.getElementById("result").value = transcript;
+      utterance.onend = function() {
+        setStatus('Đã đọc xong câu trả lời.');
       };
 
-      recognition.onerror = function(event) {
-        document.getElementById("status").textContent =
-          "Lỗi nhận diện: " + event.error;
+      utterance.onerror = function(event) {
+        setStatus('Không đọc được văn bản: ' + event.error);
       };
 
-      recognition.onend = function() {
-        isListening = false;
-        document.getElementById("status").textContent =
-          "Đã kết thúc nhận diện. Cô có thể thử lại.";
-      };
+      window.speechSynthesis.speak(utterance);
     }
 
-    function startRecognition() {
-      if (!recognition) initRecognition();
+    playButton.onclick = playVoice;
 
-      if (!recognition) return;
+    stopButton.onclick = function() {
+      window.speechSynthesis.cancel();
+      setStatus('Đã dừng đọc câu trả lời.');
+    };
 
-      if (isListening) return;
+    if (document.getElementById('autoSpeak').checked) {
+      playVoice();
+    }
+  }
+
+  /**
+   * Dừng giọng đọc
+   */
+  function stopAudio() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      setStatus('Đã dừng phát âm thanh.');
+    }
+  }
+
+  /**
+   * Gửi câu hỏi đến Gemini
+   */
+  // Địa chỉ Web App Apps Script đã triển khai.
+  const API_URL =
+    'https://script.google.com/macros/s/AKfycbwAxk1xm7veXH94_kI9rAx-Axj9RDMa6Z7YYkHmXb5GyzpC4-ZL4-ga9zkqO8DnGk-k/exec';
+
+  let apiRequestTimer = null;
+  let apiRequestScript = null;
+
+  // Hàm callback toàn cục để Apps Script trả kết quả JSONP.
+  function handleChatbotResponse(data) {
+    if (apiRequestTimer) {
+      clearTimeout(apiRequestTimer);
+      apiRequestTimer = null;
+    }
+
+    if (apiRequestScript) {
+      apiRequestScript.remove();
+      apiRequestScript = null;
+    }
+
+    removeTyping();
+
+    if (data && data.success && data.answer) {
+      const answerBox = addMessage(data.answer, 'bot');
+      speakAnswer(data.answer, answerBox);
+
+      if (!document.getElementById('autoSpeak').checked) {
+        setStatus('Đã nhận được câu trả lời.');
+      }
+    } else {
+      const errorText = data && data.answer
+        ? data.answer
+        : 'Máy chủ chưa trả về câu trả lời hợp lệ.';
+      addMessage('Xin lỗi, hệ thống đang gặp sự cố: ' + errorText, 'bot');
+      setStatus('Có lỗi xảy ra. Bạn vui lòng thử lại.');
+    }
+
+    isSending = false;
+    sendButton.disabled = false;
+  }
+
+  // Gửi câu hỏi từ GitHub Pages đến Apps Script bằng JSONP.
+  function requestGemini(question) {
+    if (apiRequestScript) {
+      apiRequestScript.remove();
+      apiRequestScript = null;
+    }
+
+    const script = document.createElement('script');
+    apiRequestScript = script;
+
+    const params = new URLSearchParams({
+      action: 'ask',
+      callback: 'handleChatbotResponse',
+      question: question
+    });
+
+    script.src = API_URL + '?' + params.toString();
+
+    script.onerror = function() {
+      if (apiRequestTimer) {
+        clearTimeout(apiRequestTimer);
+        apiRequestTimer = null;
+      }
+
+      if (apiRequestScript) {
+        apiRequestScript.remove();
+        apiRequestScript = null;
+      }
+
+      removeTyping();
+      addMessage(
+        'Xin lỗi, chưa kết nối được máy chủ. Bạn vui lòng kiểm tra mạng và thử lại nhé!',
+        'bot'
+      );
+      setStatus('Không kết nối được Apps Script.');
+
+      isSending = false;
+      sendButton.disabled = false;
+    };
+
+    apiRequestTimer = setTimeout(function() {
+      if (apiRequestScript) {
+        apiRequestScript.remove();
+        apiRequestScript = null;
+      }
+
+      removeTyping();
+      addMessage(
+        'Máy chủ phản hồi quá lâu. Bạn vui lòng thử gửi lại nhé!',
+        'bot'
+      );
+      setStatus('Hết thời gian chờ phản hồi.');
+
+      isSending = false;
+      sendButton.disabled = false;
+      apiRequestTimer = null;
+    }, 60000);
+
+    document.body.appendChild(script);
+  }
+
+  function sendMessage() {
+
+    if (isSending) {
+      return;
+    }
+
+    const question = questionInput.value.trim();
+
+    if (!question) {
+      setStatus('Bạn hãy nhập câu hỏi trước nhé!');
+      questionInput.focus();
+      return;
+    }
+
+    if (question.length > 1000) {
+      setStatus('Câu hỏi không được vượt quá 1000 ký tự.');
+      return;
+    }
+
+    stopAudio();
+
+    // Dừng nhận diện giọng nói nếu đang hoạt động
+    if (recognition && isRecording) {
+      recognition.stop();
+    }
+
+    addMessage(question, 'user');
+
+    questionInput.value = '';
+
+    isSending = true;
+    sendButton.disabled = true;
+
+    setStatus('Đang gửi câu hỏi đến trợ lý...');
+    showTyping();
+
+    requestGemini(question);
+  }
+
+  /**
+   * Gửi câu hỏi gợi ý
+   */
+  function askSuggestion(text) {
+    questionInput.value = text;
+    sendMessage();
+  }
+
+  /**
+   * Nhấn Enter để gửi
+   */
+  function handleEnter(event) {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  }
+
+  /**
+   * Khởi tạo nhận diện giọng nói
+   */
+  
+function initSpeechRecognition() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    micButton.disabled = true;
+    micButton.style.opacity = '0.4';
+
+    setStatus(
+      'Trình duyệt không hỗ trợ nhận diện giọng nói. Hãy sử dụng Google Chrome.'
+    );
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+
+  recognition.lang = 'vi-VN';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  let finalTranscript = '';
+  let recognitionError = false;
+
+  recognition.onstart = function() {
+    isRecording = true;
+    finalTranscript = '';
+    recognitionError = false;
+
+    micButton.classList.add('recording');
+    micButton.textContent = '⏹';
+
+    setStatus('🎙️ Micro đang hoạt động. Mời bạn nói câu hỏi...');
+  };
+
+  recognition.onresult = function(event) {
+
+    let interimTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+
+      const transcript = event.results[i][0].transcript;
+
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript;
+      } else {
+        interimTranscript += transcript;
+      }
+    }
+
+    questionInput.value =
+      (finalTranscript + interimTranscript).trim();
+  };
+
+  recognition.onerror = function(event) {
+
+    recognitionError = true;
+
+    const errors = {
+      'not-allowed':
+        'Bạn chưa cấp quyền micro. Hãy cấp quyền micro cho trang web trong Chrome.',
+
+      'service-not-allowed':
+        'Dịch vụ nhận diện giọng nói đang bị trình duyệt chặn.',
+
+      'no-speech':
+        'Không phát hiện giọng nói. Hãy kiểm tra micro và thử nói lại.',
+
+      'audio-capture':
+        'Không tìm thấy micro hoặc micro đang gặp sự cố.',
+
+      'network':
+        'Lỗi kết nối mạng khi nhận diện giọng nói.',
+
+      'aborted':
+        'Quá trình nhận diện giọng nói đã bị dừng.'
+    };
+
+    setStatus(
+      errors[event.error] ||
+      'Lỗi nhận diện giọng nói: ' + event.error
+    );
+  };
+
+  recognition.onend = function() {
+
+    isRecording = false;
+
+    micButton.classList.remove('recording');
+    micButton.textContent = '🎤';
+
+    // Không ghi đè thông báo lỗi
+    if (recognitionError) {
+      return;
+    }
+
+    const recognizedText = questionInput.value.trim();
+
+    if (recognizedText) {
+      setStatus('Đã nhận diện câu hỏi. Đang gửi đến trợ lý...');
+      sendMessage();
+    } else {
+      setStatus('Chưa nhận được nội dung. Bạn hãy nhấn micro và nói lại nhé!');
+    }
+  };
+}
+
+
+  /**
+   * Bật/tắt micro
+   */
+  function toggleRecognition() {
+
+    if (!recognition) {
+      setStatus(
+        'Trình duyệt chưa hỗ trợ nhận diện giọng nói. Hãy thử Google Chrome.'
+      );
+      return;
+    }
+
+    if (isSending) {
+      setStatus('Vui lòng đợi trợ lý trả lời xong nhé!');
+      return;
+    }
+
+    if (isRecording) {
+      recognition.stop();
+    } else {
+      stopAudio();
+
+      questionInput.value = '';
 
       try {
         recognition.start();
       } catch (error) {
-        document.getElementById("status").textContent =
-          "Không thể khởi động micro: " + error.message;
+        setStatus('Không thể bật micro. Bạn hãy tải lại trang và thử lại.');
       }
     }
+  }
 
-    function stopRecognition() {
-      if (recognition && isListening) {
-        recognition.stop();
-      }
+  /**
+   * Nạp danh sách giọng đọc sau khi trang mở
+   */
+  function loadVoices() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
     }
+  }
 
-    function copyText() {
-      const text = document.getElementById("result").value;
+  window.addEventListener('load', function() {
 
-      if (!text.trim()) {
-        alert("Chưa có nội dung để sao chép.");
-        return;
-      }
+  initSpeechRecognition();
+  loadVoices();
 
-      navigator.clipboard.writeText(text)
-        .then(() => alert("Đã sao chép nội dung!"))
-        .catch(() => alert("Không thể sao chép tự động."));
-    }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+});
 
-    initRecognition();
-  </script>
+</script>
 </body>
 </html>
