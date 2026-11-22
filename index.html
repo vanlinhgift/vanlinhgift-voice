@@ -318,81 +318,73 @@
   </div>
 
   
-  <div class="suggestions">
-    <button onclick="askSuggestion('Vạn Linh có những sản vật nào?')">
-      🌱 Các sản vật
-    </button>
 
-    <button onclick="askSuggestion('Giới thiệu về na Vạn Linh')">
-      🍈 Na Vạn Linh
-    </button>
+<div class="suggestions">
+  <button onclick="askSuggestion('Vạn Linh có những sản vật nào?')">
+    🌱 Các sản vật
+  </button>
 
-    <button onclick="askSuggestion('Tư vấn giúp tôi một hộp quà 200.000 đồng')">
-      🎁 Tư vấn hộp quà
-    </button>
+  <button onclick="askSuggestion('Giới thiệu về na Vạn Linh')">
+    🍈 Na Vạn Linh
+  </button>
 
-    <button onclick="askSuggestion('Giá các sản vật hiện nay là bao nhiêu?')">
-      💰 Giá sản phẩm
-    </button>
-  </div>
+  <button onclick="askSuggestion('Tư vấn giúp tôi một hộp quà 200.000 đồng')">
+    🎁 Tư vấn hộp quà
+  </button>
 
-  <div style="padding: 12px 14px; text-align: center; background: #ffffff;">
-    <a
-      href="https://script.google.com/macros/s/AKfycbwtWQOy1JKBQakKnfURcSzmzqRMJAx-iAMGtHjv3qzoM6ZalkI3isNB1lWZnX7celSa/exec"
-      target="_blank"
-      rel="noopener noreferrer"
-      style="
-        display: block;
-        padding: 12px;
-        background: #238452;
-        color: white;
-        text-decoration: none;
-        border-radius: 24px;
-        font-size: 15px;
-        font-weight: bold;
-      ">
-      🎁 ĐẶT HÀNG NGAY
-    </a>
-  </div>
-   <div class="voice-settings">
-    <label>
-      <input type="checkbox" id="autoSpeak" checked>
-      Tự động đọc câu trả lời
-    </label>
+  <button onclick="askSuggestion('Giá các sản vật hiện nay là bao nhiêu?')">
+    💰 Giá sản phẩm
+  </button>
+</div>
 
-    <span>🎙️ Tiếng Việt</span>
-  </div>
+<div style="padding: 12px 14px; text-align: center; background: #ffffff;">
+  <a
+    href="https://script.google.com/macros/s/AKfycbwtWQOy1JKBQakKnfURcSzmzqRMJAx-iAMGtHjv3qzoM6ZalkI3isNB1lWZnX7celSa/exec"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="display: block; padding: 12px; background: #238452; color: white; text-decoration: none; border-radius: 24px; font-size: 15px; font-weight: bold;">
+    🎁 ĐẶT HÀNG NGAY
+  </a>
+</div>
 
-  <div class="input-area">
+<div class="voice-settings">
+  <label>
+    <input type="checkbox" id="autoSpeak" checked>
+    Tự động đọc câu trả lời
+  </label>
 
-    <button
-  id="micButton"
-  class="action-button"
-  onclick="toggleRecognition()"
-  title="Nói câu hỏi">
-  🎤
-</button>
+  <span>🎙️ Tiếng Việt</span>
+</div>
 
-    <input
-      type="text"
-      id="question"
-      placeholder="Nhập câu hỏi hoặc nhấn micro..."
-      onkeydown="handleEnter(event)"
-    >
+<div class="input-area">
+  <button
+    id="micButton"
+    class="action-button"
+    onclick="toggleRecognition()"
+    title="Nói câu hỏi">
+    🎤
+  </button>
 
-    <button
-      id="sendButton"
-      class="action-button"
-      onclick="sendMessage()"
-      title="Gửi câu hỏi">
-      ➤
-    </button>
+  <input
+    type="text"
+    id="question"
+    placeholder="Nhập câu hỏi hoặc nhấn micro..."
+    onkeydown="handleEnter(event)"
+  >
 
-  </div>
+  <button
+    id="sendButton"
+    class="action-button"
+    onclick="sendMessage()"
+    title="Gửi câu hỏi">
+    ➤
+  </button>
+</div>
 
-  <div class="footer">
-    Vạn Linh Gift – Số hóa hương quê, kết nối giá trị địa phương
-  </div>
+<div class="footer">
+  Vạn Linh Gift – Số hóa hương quê, kết nối giá trị địa phương
+</div>
+
 
 </div>
 
